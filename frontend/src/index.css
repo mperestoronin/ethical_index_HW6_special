@@ -1,0 +1,13 @@
+.render_newline {
+  white-space: pre-wrap;
+}
+.law-justification {
+  background-color: rgba(66, 153, 225, 0.2);
+  border-bottom: 2px solid #4299e1;
+  cursor: pointer;
+}
+.law-type {
+  background-color: rgba(72, 187, 120, 0.2);
+  border-bottom: 2px solid #48bb78;
+  cursor: pointer;
+}

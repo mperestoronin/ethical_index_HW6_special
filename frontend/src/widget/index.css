@@ -1,0 +1,23 @@
+.helloworld-widget {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* spacing between elements */
+  padding: 5px;
+}
+
+.helloworld-widget .select-container {
+  display: flex;
+  flex-direction: column;
+  width: 200px; /* set the width of select elements */
+}
+
+.helloworld-widget .select-container label {
+  font-weight: bold;
+  padding: 5px;
+  margin-bottom: 5px;
+}
+
+.helloworld-widget select {
+  padding: 10px;
+  font-size: 16px;
+}

@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:15.3-alpine3.18
+    env_file:
+      - .env
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      args:
+        DOCKER_ENV: 1
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - static_volume:/app/static  # Shared volume for static files
+    depends_on:
+      - db
+
+  frontend:
+    image: node:18-alpine3.17
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    command: [ "npm", "run", "build" ]
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./frontend/dist:/usr/share/nginx/html
+      - static_volume:/usr/share/nginx/static_volume
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  db_data:
+  static_volume:
