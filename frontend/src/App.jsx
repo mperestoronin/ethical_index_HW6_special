@@ -28,6 +28,7 @@ import { UserProvider, useUser } from "./UserProvider.jsx";
 import PrivateComponent from "./PrivateComponent.jsx";
 import { BASE_URL } from "./apiRequest.jsx";
 import Statistics from "./Statistics.jsx";
+import GenerateClassification from "./GenerateClassification.jsx"
 
 const NavBar = () => {
   const { user, setUser } = useUser();
@@ -96,6 +97,9 @@ const NavBar = () => {
               </ChakraLink>
               <ChakraLink href="/admin" color="white">
                 <Button variant="nav">Администрирование</Button>
+              </ChakraLink>
+              <ChakraLink href="/documents/generate" color="white">
+                <Button variant="nav">Модель Автоклассификации</Button>
               </ChakraLink>
             </>
           )}
@@ -174,10 +178,10 @@ const App = () => {
                 path="/documents/create"
                 element={<DocumentCreationPage />}
               />
-              {/* <Route
+              <Route
                 path="/documents/generate"
                 element={<GenerateClassification />}
-              /> */}
+              />
               <Route path="/edit_document/:id" element={<DocumentEdit />} />
             </Route>
             <Route

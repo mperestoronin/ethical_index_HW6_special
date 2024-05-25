@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -9,6 +9,19 @@ import {
   Textarea,
   VStack,
   Select,
+  Box,
+  Progress,
+  Text,
+  SimpleGrid,
+  Badge,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Spinner,
+  Flex
 } from "@chakra-ui/react";
 import apiRequest from "./apiRequest";
 import { updateClassifier, updateStatus } from "./DocumentDetail/api.jsx";
@@ -21,6 +34,75 @@ const GenerateClassification = () => {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [NPA, setNPA] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [modelInfo, setModelInfo] = useState({
+    modelName: "BERD_CLASSIFIER 1.2.5",
+    modelStatus: "Активна",
+    modelLoad: "умеренная"
+  });
+  const [documents, setDocuments] = useState([
+  // Демо, пока не подключат API
+    {
+      name: "Земляной кодекс абзац 2",
+      timestamp: Date.now(),
+      status: "Выполнено",
+      estimatedTime: 5
+    },
+    {
+      name: "О КАЧЕСТВЕ И БЕЗОПАСНОСТИ ПИЩЕВЫХ ПРОДУКТОВ ч. 1 ст. 19",
+      timestamp: Date.now() - 10000000,
+      status: "Выполнено",
+      estimatedTime: 7
+    },
+    {
+      name: "ГРАЖДАНСКИЙ КОДЕКС (ЧАСТИ 1-2)",
+      timestamp: Date.now() - 5000000,
+      status: "В процессе",
+      estimatedTime: 10
+    },
+    {
+      name: "ТРУДОВОЙ КОДЕКС ст. 331.1 ТК РФ",
+      timestamp: Date.now() - 5000000,
+      status: "В очереди",
+      estimatedTime: null
+    }
+  ]);
+
+useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const modelResponse = await fetch('/api/model-info');
+        const modelData = await modelResponse.json();
+        setModelInfo(modelData);
+
+        const documentsResponse = await fetch('/api/documents/status');
+        const documentsData = await documentsResponse.json();
+        setDocuments(documentsData.documents);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
+      setIsLoading(false);
+    };
+
+    fetchData();
+    const intervalId = setInterval(fetchData, 5000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const statusColorScheme = {
+    'Выполнено': 'green',
+    'В процессе': 'yellow',
+    'В очереди': 'gray',
+    'Активна': 'green',
+    'Не активна': 'red'
+  };
+
+  const loadColorScheme = {
+    'высокая': 'red',
+    'умеренная': 'yellow',
+    'низкая': 'green'
+  };
 
   const addAnnotationToBackend = async (
     documentId,
@@ -336,7 +418,44 @@ const GenerateClassification = () => {
       <Button type="submit" colorScheme="blue" size="lg">
         Сгенерировать классификацию
       </Button>
+      <VStack spacing={4} p={5} alignItems="stretch">
+      <Heading size="md">Статус Модели Автоматической Классификации Документов</Heading>
+      <Flex justify="space-between" align="center" w="full" p={4} borderWidth="1px" borderRadius="lg">
+        <Text>Модель: {modelInfo.modelName}</Text>
+        <Text>Статус: <Badge colorScheme={statusColorScheme[modelInfo.modelStatus]}>{modelInfo.modelStatus}</Badge></Text>
+        <Text>Загруженность: <Badge colorScheme={loadColorScheme[modelInfo.modelLoad]}>{modelInfo.modelLoad}</Badge></Text>
+      </Flex>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th>Название документа</Th>
+              <Th>Время отправки</Th>
+              <Th>Статус</Th>
+              <Th>Ожидаемое время</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {documents.map((doc, index) => (
+              <Tr key={index}>
+                <Td>{doc.name}</Td>
+                <Td>{new Date(doc.timestamp).toLocaleString()}</Td>
+                <Td>
+                  <Badge colorScheme={statusColorScheme[doc.status]}>
+                    {doc.status}
+                  </Badge>
+                </Td>
+                <Td>{doc.estimatedTime ? `${doc.estimatedTime} мин.` : 'Расчет...'}</Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      )}
     </VStack>
+    </VStack>
+
   );
 };
 
