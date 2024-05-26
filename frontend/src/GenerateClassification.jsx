@@ -36,7 +36,7 @@ const GenerateClassification = () => {
   const [NPA, setNPA] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [modelInfo, setModelInfo] = useState({
-    modelName: "BERD_CLASSIFIER 1.2.5",
+    modelName: "BERT Classifier 1.2.5",
     modelStatus: "Активна",
     modelLoad: "умеренная"
   });
@@ -46,24 +46,35 @@ const GenerateClassification = () => {
       name: "Земляной кодекс абзац 2",
       timestamp: Date.now(),
       status: "Выполнено",
+      norms: "5/5",
       estimatedTime: 5
     },
     {
       name: "О КАЧЕСТВЕ И БЕЗОПАСНОСТИ ПИЩЕВЫХ ПРОДУКТОВ ч. 1 ст. 19",
       timestamp: Date.now() - 10000000,
       status: "Выполнено",
+      norms: "6/6",
       estimatedTime: 7
     },
     {
       name: "ГРАЖДАНСКИЙ КОДЕКС (ЧАСТИ 1-2)",
       timestamp: Date.now() - 5000000,
       status: "В процессе",
-      estimatedTime: 10
+      norms: "4/6",
+      estimatedTime: 2
     },
     {
       name: "ТРУДОВОЙ КОДЕКС ст. 331.1 ТК РФ",
       timestamp: Date.now() - 5000000,
       status: "В очереди",
+      norms: "0/8",
+      estimatedTime: 12
+    },
+    {
+      name: "ФЗ ОТ 13.03.2006 N 38-ФЗ О РЕКЛАМЕ",
+      timestamp: Date.now() - 5000000,
+      status: "В очереди",
+      norms: "0/8",
       estimatedTime: null
     }
   ]);
@@ -434,6 +445,7 @@ useEffect(() => {
               <Th>Название документа</Th>
               <Th>Время отправки</Th>
               <Th>Статус</Th>
+              <Th>Классифицированные нормы</Th>
               <Th>Ожидаемое время</Th>
             </Tr>
           </Thead>
@@ -447,6 +459,7 @@ useEffect(() => {
                     {doc.status}
                   </Badge>
                 </Td>
+                <Td>{doc.norms}</Td>
                 <Td>{doc.estimatedTime ? `${doc.estimatedTime} мин.` : 'Расчет...'}</Td>
               </Tr>
             ))}
