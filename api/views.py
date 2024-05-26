@@ -87,21 +87,22 @@ def me(request):
 
 
 class AnnotationViewSet(viewsets.ModelViewSet):
-    queryset = Annotation.objects.all()
+    queryset = Annotation.objects.exclude(document__status='generated')
     serializer_class = AnnotationSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class ExportAnnotationViewSet(viewsets.ModelViewSet):
-    queryset = Annotation.objects.all()
+    queryset = Annotation.objects.exclude(document__status='generated')
     serializer_class = ExportAnnotationSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class DocumentAndAnnotationViewset(viewsets.ModelViewSet):
-    queryset = Document.objects.all()
+    queryset = Document.objects.exclude(status='generated')
     serializer_class = DocumentAndAnnotationSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
 
 
 @api_view(["GET"])

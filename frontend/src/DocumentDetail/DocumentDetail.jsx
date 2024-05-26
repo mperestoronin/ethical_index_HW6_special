@@ -44,7 +44,7 @@ const DocumentDetailPage = () => {
     { value: "UNMARKED", label: "Не размечено" },
     { value: "MARKED", label: "Размечено" },
     { value: "CHECKED", label: "Проверено" },
-    // { value: "GENERATED", label: "Сгенерировано" },
+    { value: "GENERATED", label: "Сгенерировано" },
   ];
 
   const statusOptions = statusChoices.map((statusChoice, index) => {
